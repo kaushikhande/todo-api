@@ -1,0 +1,4 @@
+one:
+  title: todo task one
+  schedule: <%= Date.current %>
+  description: todo task one description
