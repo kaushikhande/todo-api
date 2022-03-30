@@ -4,6 +4,8 @@ module Api
   module V1
     # todos index, create, update and destroy
     class TodosController < Api::V1::BaseController
+      before_action :find_todo, only: %i[update destroy]
+
       def index
         @todos = Todo.all
         render json: @todos
@@ -15,27 +17,23 @@ module Api
         if @todo.save
           render json: @todo
         else
-          render json: @todo.errors.full_messages, status: :unprocessable_entity
+          render_error_messages
         end
       end
 
       def update
-        @todo = Todo.find(params[:id])
-
         if @todo.update(todo_params)
           render json: @todo
         else
-          render json: @todo.errors.full_messages, status: :unprocessable_entity
+          render_error_messages
         end
       end
 
       def destroy
-        @todo = Todo.find(params[:id])
-
         if @todo.destroy
           head :no_content
         else
-          render json: @todo.errors.full_messages, status: :unprocessable_entity
+          render_error_messages
         end
       end
 
@@ -43,6 +41,14 @@ module Api
 
       def todo_params
         params.require(:todo).permit(:title, :description, :schedule)
+      end
+
+      def find_todo
+        @todo = Todo.find(params[:id])
+      end
+
+      def render_error_messages
+        render_error data: @todo.errors.full_messages
       end
     end
   end
