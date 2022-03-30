@@ -19,7 +19,15 @@ module Api
         end
       end
 
-      def update; end
+      def update
+        @todo = Todo.find(params[:id])
+
+        if @todo.update(todo_params)
+          render json: @todo
+        else
+          render json: @todo.errors.full_messages, status: :unprocessable_entity
+        end
+      end
 
       def destroy; end
 

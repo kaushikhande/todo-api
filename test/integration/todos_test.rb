@@ -27,13 +27,36 @@ class TodosTest < ActionDispatch::IntegrationTest
   end
 
   def test_create_todo_for_invalid_inputs
-    assert_difference 'Todo.count', 0 do
+    assert_no_difference 'Todo.count' do
       post '/api/v1/todos', params: {
         todo: {
           description: 'description'
         }
       }
     end
+    assert_response :unprocessable_entity
+  end
+
+  def test_update_todo_for_valid_inputs
+    todo = todos(:one)
+    put "/api/v1/todos/#{todo.id}", params: {
+      todo: {
+        title: 'new title',
+        description: 'description'
+      }
+    }
+    assert_response :success
+    assert_equal 'new title', todo.reload.title
+  end
+
+  def test_update_todo_for_invalid_inputs
+    todo = todos(:one)
+    put "/api/v1/todos/#{todo.id}", params: {
+      todo: {
+        title: nil,
+        description: 'description'
+      }
+    }
     assert_response :unprocessable_entity
   end
 end
