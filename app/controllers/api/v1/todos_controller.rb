@@ -29,7 +29,15 @@ module Api
         end
       end
 
-      def destroy; end
+      def destroy
+        @todo = Todo.find(params[:id])
+
+        if @todo.destroy
+          head :no_content
+        else
+          render json: @todo.errors.full_messages, status: :unprocessable_entity
+        end
+      end
 
       private
 

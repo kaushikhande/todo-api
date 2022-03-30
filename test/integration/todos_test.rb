@@ -59,4 +59,13 @@ class TodosTest < ActionDispatch::IntegrationTest
     }
     assert_response :unprocessable_entity
   end
+
+  def test_destroy_todo
+    todo = todos(:one)
+    assert_difference 'Todo.count', -1 do
+      delete "/api/v1/todos/#{todo.id}"
+    end
+
+    assert_response :no_content
+  end
 end
