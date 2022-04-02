@@ -21,7 +21,7 @@ class TodoTest < ActiveSupport::TestCase
     end
   end
 
-  test 'validation error for schedule greater than or equal today' do
+  test 'validation error for schedule lesser than today' do
     todo = Todo.create title: :test, schedule: DateTime.current - 1
     assert_not todo.valid?
     assert todo.errors.full_messages.first.match?(/schedule/i)
